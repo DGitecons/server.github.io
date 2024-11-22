@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria de Vídeos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Arial&display=swap');
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: rgb(0, 0, 0);
+            font-family: "Avenir LT Std", sans-serif;
+        }
+        /*Container do Vídeo */
+        #video-container {
+            position: relative;
+            width: 100%;
+            height: 50%;
+            background-color: black;
+        }
+        video {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #logo {
+            position: absolute;
+            top: 2vh;
+            left: 5vw;
+            z-index: 100;
+            width: 150px;
+            height: auto;
+        }
+
+        #title-overlay {
+            position: absolute;
+            top: 35vh;
+            left: 10%;
+            transform: translateY(-50%);
+            text-align: left;
+            z-index: 100;
+            color: #ffffff;
+            font-weight: 300;
+            font-family: "Avenir LT Std", sans-serif;
+            text-shadow: black 2px 2px 20px;
+        }
+
+        #main-title {
+            font-size: 5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        #subtitle {
+            font-size: 2rem;
+        }
+        .content-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+            background-color: white;
+        }
+        /* White containers. Serviços/Próximos eventos/ Notícias*/
+        #white-container {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50%;
+            background-color: white;
+            z-index: 10;
+            padding: 10px;
+            overflow: hidden;
+        }
+        
+        .qr-code-img {
+            position: absolute;
+            top: 418px;  /* Distância do topo */
+            right: 32px;  /* Distância da direita */
+            width: 131px;  /* Tamanho da imagem */
+            height: auto;
+            z-index: 10;  /* Garante que a imagem fique sobre os outros elementos */
+            background-color: white;
+        }
+
+        /* Services styles */
+        .services-title {
+            font-family: "Avenir LT Std", sans-serif;
+            font-size: 4rem;
+            font-weight: 0;
+            margin-top: 50px;
+            margin-bottom: 60px;
+        
+            color: #0071a0;
+            text-align: center;
+        }
+
+        .icons-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            width: 90%;
+            gap: 70px;
+            padding: 0 20px;
+            margin: 0 auto;
+        }
+
+        .icon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 200px;
+            max-width: 200px;
+            /* Added margin-bottom to ensure space for text */
+            margin-bottom: 20px;
+        }
+
+        .icon-container img {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+        .icon-container:nth-child(3) img {
+            width: 850px;
+            height: 85px;
+            object-fit: contain;
+            margin-bottom: 16px;
+            margin-top: 8px;
+            transform: scale(1);
+        }
+
+        .icon-container:nth-child(4) img {
+            width: 105px;
+            height: 105px;
+            object-fit: contain;
+            margin-bottom: 12px;
+            margin-top: -10px;
+            transform: scale(1);
+        }
+
+        .icon-container:last-child img {
+            width: 115px;
+            height: 115px;
+            object-fit: contain;
+            margin-bottom: 3px;
+            margin-top: -10px;
+            transform: scale(1.2);
+        }
+
+        .icon-text {
+            text-align: center;
+            /* Removed min-height: 0 which was causing the issue */
+            font-family: "Avenir LT Std", sans-serif;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #646464;
+            max-width: 180px;
+            margin: 0 auto;
+            /* Added to ensure text is visible */
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Events styles */
+        .event-card {
+            transition: transform 0.3s ease;
+            width: 300px; /* Aumentando a largura dos cards */
+            margin-right: 10px; /* Reduzindo o espaçamento entre os cards */
+            flex-shrink: 0; /* Impede que os cartões encolham */
+            margin-bottom: 10px; /* Reduzindo o espaço entre os cards */
+            position: relative; /* Necessário para posicionar o texto sobre a imagem */
+            border-radius: 0; /* Removendo bordas arredondadas */
+        }
+
+        .event-card img {
+            max-height: 100%;
+            width: 100%;
+            object-fit: cover;
+            aspect-ratio: 1 / 1;
+            border-radius: 0px;
+        }
+
+        .event-date {
+            position: absolute;
+            top: 0px;
+            left: 20%;
+            transform: translateX(-50%);
+            width: 15%;
+            background-color: #0071a0;
+            color: white;
+            padding: 5px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            z-index: 10;
+        }
+        #eventsContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
+
+/*
+.card-body {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+*/
+        /* News styles */
+        .card-body {
+            padding: 0px; /* Reduzindo o padding dentro do card */
+        }
+        .card-title,
+        .card-description {
+            font-size: 14px;
+            white-space: normal; /* Permite que o texto quebre em várias linhas */
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Limita o texto a 3 linhas */
+            -webkit-box-orient: vertical;
+            font-weight: 500;
+            color: rgb(234, 234, 234);
+        }
+        .card-title {
+            font-size: 14px; /* Tamanho maior para o título */
+            font-weight: 800;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            margin-top: 0px;
+        }
+
+        .card-text-container {
+            position: absolute;
+            bottom: 4px; /* Faz o container começar da parte inferior da imagem */
+            left: 0;
+            width: 100%; /* Faz com que o container tenha o mesmo width da imagem */
+            background-color: #0070a099; /* Fundo semitransparente para o texto */
+            color: white;
+            padding: 10px;
+            box-sizing: border-box; /* Garantir que o padding não afete a largura do container */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 30%; /* Aumentando a altura para permitir até 3 linhas de descrição */
+        }
+
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #555;
+            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            margin-top: 0px
+        }
+
+
+        #newsContainer {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
+
+        #pageTitle {
+            font-family: "Avenir LT Std", sans-serif;
+            color: #0071a0;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            font-size: 2.3rem;
+            font-weight: 0;
+        }
+        #newsPageTitle {
+            font-family: "Avenir LT Std", sans-serif;
+            color: #0071a0;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+            margin-top: 20px;
+            font-size: 2.3rem;
+            font-weight: 0;
+        }
+
+        .hidden {
+            transform: translateX(100%);
+        }
+
+        .visible {
+            transform: translateX(0);
+        }
+
+        /* Footer */
+        #blue-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 93%;
+            height: 12vh;
+            background: linear-gradient(135deg, #1496ce, #0071ab);
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 5px 10%;
+            box-sizing: border-box;
+            clip-path: polygon(0% 0, 100% 0, 95% 100%, 0 100%);
+        }
+        .footer-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin: 5px 0;
+            gap: 20px;
+        }
+/*
+        .footer-row:last-child {
+            justify-content: center;
+            width: 60%;
+            margin-left: auto;
+            margin-right: auto;
+            gap: 40px;
+        }
+*/
+        .footer-image {
+            height: 50px;
+            width: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .footer-image img {
+            height: 100%;
+            width: auto;
+        }
+
+    </style>
+</head>
+<body>
+    <section id="video-container">
+        <img id="logo" src="https://raw.githubusercontent.com/DGitecons/public/main/%C3%ADcones/itecons-white.png" alt="Logotipo Itecons">
+        
+        <div id="title-overlay">
+            <div id="main-title">itecons</div>
+            <div id="subtitle">18 anos de Investigação e Desenvolvimento Tecnológico</div>
+        </div>
+    </section>
+    <section id="white-container">
+        <!-- Services Content -->
+        <div class="content-container visible" id="services-content">
+            <div class="services-title">Serviços</div>
+            <div class="icons-wrapper">
+                <div class="icon-container">
+                    <img src="https://github.com/DGitecons/public/blob/main/%C3%ADcones/1.%20Ensaios%20Laboratoriais%20%20e%20IN-SITU.png?raw=true" alt="Ensaios Laboratoriais e IN-SITU">
+                    <div class="icon-text">Ensaios Laboratoriais e <i>IN-SITU</i></div>
+                </div>
+                <div class="icon-container">
+                    <img src="https://github.com/DGitecons/public/blob/main/%C3%ADcones/2.%20Consultoria.png?raw=true" alt="Consultoria">
+                    <div class="icon-text">Consultoria</div>
+                </div>
+                <div class="icon-container">
+                    <img src="https://github.com/DGitecons/public/blob/main/%C3%ADcones/3.%20Marca%C3%A7%C3%A3o%20CE%20e%20Avalia%C3%A7%C3%A3o%20T%C3%A9cnica.png?raw=true" alt="Marcação CE e Avaliação Técnica">
+                    <div class="icon-text">Marcação CE e Avaliação Técnica</div>
+                </div>
+                <div class="icon-container">
+                    <img src="https://github.com/DGitecons/public/blob/main/%C3%ADcones/4.%20Investiga%C3%A7%C3%A3o%20e%20Desenvolvimento.png?raw=true" alt="Investigação e Desenvolvimento">
+                    <div class="icon-text">Investigação e Desenvolvimento</div>
+                </div>
+                <div class="icon-container">
+                    <img src="https://github.com/DGitecons/public/blob/main/%C3%ADcones/5.%20Forma%C3%A7%C3%A3o.png?raw=true" alt="Formação">
+                    <div class="icon-text">Formação</div>
+                </div>
+                <div class="icon-container">
+                    <img src="https://github.com/DGitecons/public/blob/main/%C3%ADcones/6.%20Eventos.png?raw=true" alt="Eventos">
+                    <div class="icon-text">Eventos</div>
+                </div>
+            </div>
+            <img src="https://github.com/DGitecons/public/blob/main/QR%20Code/1.%20Services.png?raw=true" alt="QR Code" class="qr-code-img">
+
+        </div>
+
+        <!-- Events Content -->
+        <div class="content-container hidden" id="events-content">
+            <div class="container py-2">
+                <h2 id="pageTitle"></h2>
+                <div id="eventsContainer" class="row g-4">
+                    <!-- Event cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+            <img src="https://github.com/DGitecons/public/blob/main/QR%20Code/2.%20Events.png?raw=true" alt="QR Code" class="qr-code-img">
+        </div>
+        <!-- Projects Content -->
+        <div class="content-container hidden" id="news-content">
+            <div class="container py-2">
+                <h2 id="newsPageTitle"></h2>
+                <div id="newsContainer" class="row g-4">
+                    <!-- Projects will be inserted here by JavaScript -->
+                </div>
+            </div>
+            <img src="https://github.com/DGitecons/public/blob/main/QR%20Code/3.%20News.png?raw=true" alt="QR Code" class="qr-code-img">
+        </div>
+    </section>
+    <section id="blue-bar"> 
+        <!-- QR Code no canto direito da blue-bar -->
+        <div class="blue-bar-content">
+
+        
+            <div class="footer-row">
+                <div class="footer-image">
+                    <img src="https://raw.githubusercontent.com/DGitecons/public/main/Footer/6.png" alt="Footer 1">
+                </div>
+                <div class="footer-image" style="margin-left: 375px;">
+                    <img src="https://raw.githubusercontent.com/DGitecons/public/main/Footer/5.png" alt="Footer 6">
+                </div>
+                <div class="footer-image" style="margin-left: 0px;">
+                    <img src="https://raw.githubusercontent.com/DGitecons/public/main/Footer/4.png" alt="Footer 2">
+                </div>
+                <div class="footer-image" style="margin-left: 0px;">
+                    <img src="https://raw.githubusercontent.com/DGitecons/public/main/Footer/3.png" alt="Footer 3">
+                </div>
+            </div>
+            <div class="footer-row">
+                <div class="footer-image">
+                    <img src="https://raw.githubusercontent.com/DGitecons/public/main/Footer/2.png" alt="Footer 5">
+                </div>
+                <div class="footer-image">
+                    <img src="https://raw.githubusercontent.com/DGitecons/public/main/Footer/1.png" alt="Footer 6">
+                </div>
+            </div>
+        </div>
+
+    </section>
+    
+
+
+    <script>
+         const videos = [
+            {
+                "url": "https://www.itecons.uc.pt/storage/W1siZiIsIjIwMjIvMTIvMDUvODdnajQ3a2V3eV9JdGVjb25zX1Bvc3RfMDIubXA0Il1d?sha=518dbad05e10f01a",
+                "atributos": {
+                    "autoplay": true,
+                    "playsinline": true,
+                    "muted": true,
+                    "preload": "auto"
+                }
+            },
+            {
+                "url": "https://www.itecons.uc.pt/storage/W1siZiIsIjIwMjIvMTIvMDUvaG5mYm5xcDVsX0l0ZWNvbnNfUG9zdF8wNC5tcDQiXV0?sha=2379d467ed6a2e6a",
+                "atributos": {
+                    "autoplay": true,
+                    "playsinline": true,
+                    "muted": true,
+                    "preload": "auto"
+                }
+            },
+            {
+                "url": "https://www.itecons.uc.pt/storage/W1siZiIsIjIwMjIvMTIvMDUvOG5rbnRocm51NF9JdGVjb25zX1Bvc3RfMDMubXA0Il1d?sha=28fdfd2cc00f0c8a",
+                "atributos": {
+                    "autoplay": true,
+                    "playsinline": true,
+                    "muted": true,
+                    "preload": "auto"
+                }
+            },
+            {
+                "url": "https://www.itecons.uc.pt/storage/W1siZiIsIjIwMjIvMTIvMDUvNzl6NGpvZW00el9JdGVjb25zX1Bvc3RfMDEubXA0Il1d?sha=c387c4093f47a02e",
+                "atributos": {
+                    "autoplay": true,
+                    "playsinline": true,
+                    "muted": true,
+                    "preload": "auto"
+                }
+            }
+        ];
+
+        const videoContainer = document.getElementById('video-container');
+        let currentVideoIndex = 0;
+
+        function loadVideo(index) {
+            const currentVideo = document.createElement('video');
+            currentVideo.src = videos[index].url;
+            currentVideo.autoplay = true;
+            currentVideo.playsinline = true;
+            currentVideo.muted = true;
+            currentVideo.preload = "auto";
+            currentVideo.controls = false;
+
+            currentVideo.style.opacity = 0;
+            videoContainer.appendChild(currentVideo);
+
+            setTimeout(() => {
+                currentVideo.style.opacity = 1;
+            }, 100);
+
+            const nextIndex = (index + 1) % videos.length;
+
+            currentVideo.addEventListener('timeupdate', () => {
+                if (currentVideo.duration - currentVideo.currentTime <= 2) {
+                    startFadeOut(currentVideo, nextIndex);
+                }
+            });
+        }
+
+        function startFadeOut(video, nextIndex) {
+            video.style.opacity = 0;
+
+            setTimeout(() => {
+                videoContainer.removeChild(video);
+                loadVideo(nextIndex);
+            }, 1000);
+        }
+
+        loadVideo(currentVideoIndex);
+        // Function to toggle between services and events
+        function toggleContent() {
+    const sections = [
+        document.getElementById('services-content'),
+        document.getElementById('events-content'),
+        document.getElementById('news-content')
+    ];
+    
+    const currentVisibleIndex = sections.findIndex(section => section.classList.contains('visible'));
+    const nextIndex = (currentVisibleIndex + 1) % sections.length;
+    
+    sections.forEach((section, index) => {
+        if (index === nextIndex) {
+            section.classList.remove('hidden');
+            section.classList.add('visible');
+        } else {
+            section.classList.remove('visible');
+            section.classList.add('hidden');
+        }
+    });
+}
+
+        // Toggle content every 7 seconds
+        setInterval(toggleContent, 10000);
+
+// Modificação do JavaScript para carregar eventos
+fetch('itecons_next.json') // Atualizando para o novo arquivo JSON
+    .then(response => response.json())
+    .then(data => {
+        const container = document.getElementById('eventsContainer');
+        const pageTitle = document.getElementById('pageTitle');
+
+        // Atualiza o título da página com o título do JSON
+        pageTitle.textContent = data.title;
+
+        // Itera pelos eventos no JSON
+        data.events.slice(0, 5).forEach(event => {
+            container.innerHTML += `
+                <div class="event-card">
+                    <div class="card">
+                        <div class="event-date">${event.date}</div>
+                        <img src="${event.img}" class="card-img-top" alt="Event Image">
+                        <div class="card-body">
+                            <div class="card-text-container">
+                                <h5 class="card-title">${event.subtitle}</h5>
+                                <p class="card-description">${event.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+        });
+    })
+    .catch(error => {
+        console.error('Erro ao carregar eventos:', error);
+        document.getElementById('eventsContainer').innerHTML = 
+            '<div class="alert alert-danger">Erro ao carregar eventos</div>';
+    });
+
+    fetch('itecons_news.json')
+.then(response => {
+    if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return response.json();
+})
+.then(newsData => {
+    const container = document.getElementById('newsContainer');
+    const pageTitle = document.getElementById('newsPageTitle');
+
+    pageTitle.textContent = 'Notícias';
+
+    newsData.slice(0, 5).forEach(newsItem => {
+        container.innerHTML += `
+            <div class="event-card">
+                <div class="card">
+                    <img src="${newsItem.imagem}" class="card-img-top" alt="News Image">
+                    <div class="card-body">
+                        <div class="card-text-container">
+                            <h5 class="card-title">${newsItem.titulo}</h5>
+                            <p class="card-description">${newsItem.descricao}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+    });
+})
+.catch(error => {
+    console.error('Detailed error loading news:', error);
+    document.getElementById('newsContainer').innerHTML = 
+        `<div class="alert alert-danger">Error loading news: ${error.message}</div>`;
+});
+
+// Add this to the existing <script> section in the HTML
+
+    function createElaboratedClock() {
+    const clockContainer = document.createElement('div');
+    clockContainer.id = 'elaborated-digital-clock';
+    clockContainer.style.position = 'absolute';
+    clockContainer.style.top = '10px';
+    clockContainer.style.right = '20px';
+    clockContainer.style.display = 'flex';
+    clockContainer.style.alignItems = 'center';
+    clockContainer.style.backgroundColor = 'transparent';
+    clockContainer.style.padding = '10px';
+    clockContainer.style.borderRadius = '10px';
+    clockContainer.style.fontFamily = '"Avenir LT Std", sans-serif';
+    clockContainer.style.color = 'white';
+    clockContainer.style.zIndex = '110';
+
+    const dateElement = document.createElement('div');
+    dateElement.id = 'clock-date';
+    dateElement.style.marginRight = '15px';
+    dateElement.style.fontSize = '1rem';
+
+    const separatorElement = document.createElement('div');
+    separatorElement.style.width = '2px';
+    separatorElement.style.height = '40px';
+    separatorElement.style.backgroundColor = 'white';
+    separatorElement.style.position = 'absolute';
+    separatorElement.style.left = '50.8%';
+    separatorElement.style.transform = 'translateX(-50%)';
+    separatorElement.style.top = '5px';
+
+    const timeElement = document.createElement('div');
+    timeElement.id = 'clock-time';
+    timeElement.style.fontSize = '1.8rem';
+    timeElement.style.fontWeight = 'bold';
+    timeElement.style.display = 'flex';  // Add flex display to align hour, minute, and second elements
+    timeElement.style.minWidth = '140px';  // Fixed width to ensure consistent layout
+
+    clockContainer.appendChild(dateElement);
+    clockContainer.appendChild(separatorElement);
+    clockContainer.appendChild(timeElement);
+
+    document.getElementById('video-container').appendChild(clockContainer);
+
+    function updateClock() {
+        const now = new Date();
+
+        // Date formatting
+        const months = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+        const dayNumber = now.getDate();
+        const monthName = months[now.getMonth()];
+        const year = now.getFullYear();
+
+        dateElement.innerHTML = `<strong>${dayNumber}</strong> <strong>${monthName}</strong> <strong>${year}</strong>`;
+
+        // Time formatting
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+
+        timeElement.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+}
+
+// Call the function to create and start the clock
+createElaboratedClock();
+
+
+
+    </script>
+</body>
+</html>
